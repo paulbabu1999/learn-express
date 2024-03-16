@@ -22,7 +22,7 @@ const addMsgToRequest = function (req, res, next) {
         error: {message: 'users not found', status: 404}
     });
   }
-  
+
 }
 
 app.use(
@@ -36,6 +36,22 @@ app.get('/read/usernames', (req, res) => {
   });
   res.send(usernames);
 });
+
+app.use("/read/username", addMsgToRequest);
+app.get("/read/username/:name", (req, res) => {
+  let userName = req.params.name;
+  if (!userName) {
+    return res.status(500).send({ error: "Username cannot be empty" });
+  }
+  let userFound = req.users.filter((user) => {
+    return user.username === userName;
+  })
+  if (userFound.length != 0) {
+    return res.status(200).send(userFound);
+  } else {
+    return res.status(200).send({ error: "User not found" });
+  }
+})
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
